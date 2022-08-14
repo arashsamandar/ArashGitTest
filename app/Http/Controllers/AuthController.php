@@ -45,7 +45,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:5'
         ]);
 
-        if($validator->fails()) {
+        if($validator->fails()) { // using fails
             return response(['message' => $validator->errors()]);
         }
 
