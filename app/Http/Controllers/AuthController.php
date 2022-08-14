@@ -25,7 +25,7 @@ class AuthController extends Controller
         ]);
 
         if($validator->fails()) {
-            return response(['message' => $validator->getMessageBag()->getMessages()]);
+            return response(['message' => $validator->errors()]);
         }
 
         $user = User::create([
@@ -41,12 +41,12 @@ class AuthController extends Controller
 
     public function authLogin(Request $request) {
         $validator = Validator::make($request->all(),[
-            'email'=> 'required|email|string',
+            'email'=> 'required|email',
             'password' => 'required|string|min:5'
         ]);
 
         if($validator->fails()) {
-            return response(['message' => $validator->getMessageBag()->getMessages()]);
+            return response(['message' => $validator->errors()]);
         }
 
         $user = User::where('email',$request->input('email'))->first();
@@ -58,10 +58,10 @@ class AuthController extends Controller
         $token = $user->createToken('myapp')->plainTextToken;
         $response = ['user' => $user, 'token' => $token];
 
-        // includes remember_me_cookie for front end
-        if($request->has('remember_me')) {
-            setcookie('remember_me_cookie',$token, time()*60);
-        };
+        // @todo Remember ( If front couldn't do Remember-Me without you
+//        if($request->has('remember_me')) {
+//            setcookie('remember_me_cookie',$token, time()*60);
+//        };
 
         return response($response,201);
     }
@@ -69,6 +69,6 @@ class AuthController extends Controller
     public function authLogout(Request $request) {
         auth()->user()->tokens()->delete();
         Cookie::forget('remember_me_cookie');
-        return ['message' => 'loggedOut'];
+        return response(['message' => 'loggedOut']);
     }
 }

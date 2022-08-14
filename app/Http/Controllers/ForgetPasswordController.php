@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ResetPasswordEmailJob;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class ForgetPasswordController extends Controller
        ]);
        if($validator->fails()){
            return response([
-               'error' => $validator->getMessageBag()->getMessages()
+               'error' => $validator->errors()
            ]);
        }
        $token = Str::random(64);
@@ -33,5 +34,19 @@ class ForgetPasswordController extends Controller
            $message->to($email);
            $message->subject('Reset Password');
        });
+       if(Mail::failures() != 0) {
+           return response('email has been send succesfuly');
+       }
+       return "Oops! there where some errors";
+   }
+
+   public function resetPassword(Request $request) {
+        $request->query('token');// check it with the token  stored previously on database
+       // POST Email
+       // POST password
+       // POST password_confirmation
+       // check if the email is the same with the database
+       // after that => update the user password database
+       // and we are done :)
    }
 }

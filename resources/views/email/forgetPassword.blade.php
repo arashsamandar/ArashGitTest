@@ -1,7 +1,7 @@
 <h1>Forget Password Email</h1>
 
 You can reset password from bellow link:
-<a href="{{ route('resetPassword', $token) }}">Reset Password</a>
+<a href="{{ route('resetPassword',$token) }}">Reset Password</a>
 
 1) a POST route that checks if email exists and if yes
 would send a token and email to a button and sends this button to the user Email
